@@ -65,9 +65,27 @@ export default function HomeScreen() {
     console.log("The Device ID Is "+deviceId);
     
     BleManager.connect(deviceId).then(()=>{
+      /*
+      devices.dart - 262
+      Loop through services until you find characteristic 
+      Then do services for device_details dart
+      Line 477 "FFB2"
+      */
       console.log("Device "+deviceId+" Connected");
-      BleManager.retrieveServices(deviceId,["need Service ID Here"]).then((services)=>{
-        console.log(services.characteristics);
+      BleManager.retrieveServices(deviceId,["need Service ID Here"]).then((peripheralInfo)=>{
+        if(peripheralInfo.characteristics)
+          peripheralInfo.characteristics.forEach(characteristic => {
+          console.log("Characteristic Is "+characteristic);
+          if(characteristic.characteristic.includes("FFB2"))
+          {
+            BleManager.read(deviceId,characteristic.service,characteristic.characteristic).then((readData)=>{
+              console.log("The Characteristic Data Is "+readData);
+            })
+            
+          }
+          
+        });
+        else(console.log("No Services Detected"));
       }).catch((error)=>{console.log("Retrieve Error "+error)});
     }).catch((error)=>{console.log("Connect Error "+error)});
   }
@@ -75,7 +93,7 @@ export default function HomeScreen() {
   function handleDiscoverDevice(peripheral: Peripheral)
   {
     
-    if(peripheral.name && peripheral.name.includes("CGM-"))
+    if(peripheral.name/* && peripheral.name.includes("CGM-")*/)
       {
         setDeviceNames([...deviceNames,[peripheral.id,peripheral.name]]);
       }  
