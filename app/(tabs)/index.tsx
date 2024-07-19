@@ -93,7 +93,7 @@ export default function HomeScreen() {
   function handleDiscoverDevice(peripheral: Peripheral)
   {
     
-    if(peripheral.name/* && peripheral.name.includes("CGM-")*/)
+    if(peripheral.name && peripheral.name.includes("CGM-"))
       {
         setDeviceNames([...deviceNames,[peripheral.id,peripheral.name]]);
       }  
